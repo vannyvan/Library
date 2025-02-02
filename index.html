@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibraryX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #22d3ee;
+            --secondary-color: #818cf8;
+            --bg-color: #0f172a;
+            --text-color: #e2e8f0;
+            --card-bg: rgba(30, 41, 59, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            background-image: url('imgs/main.avif');
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: -1;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            padding: 0.5rem 0;
+            background-color: rgba(15, 23, 42, 0.95);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            background: linear-gradient(45deg, rgba(34, 211, 238, 0.1), rgba(129, 140, 248, 0.1));
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+            z-index: 1;
+            animation: zoomInOut 20s infinite alternate;
+        }
+
+        @keyframes zoomInOut {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.1); }
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.5s;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.7s;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.5rem;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 1s forwards 0.9s;
+            margin-top: 1rem;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(34, 211, 238, 0.3);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            padding: 4rem 0;
+            background-color: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-item {
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .stat-item.animate {
+            animation: fadeInUp 1s forwards;
+        }
+
+        .stat-item h3 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+        }
+
+        .books-grid, .categories-grid, .services-grid, .events-grid, .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+
+        .book-card, .category-card, .service-card, .event-card, .testimonial-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 300px; 
+            margin: 0 auto; 
+        }
+
+        .book-card img, .category-card img {
+            width: 100%; 
+            height: 450px; 
+            object-fit: cover; 
+            transition: transform 0.3s ease; 
+        }
+
+        .book-info, .category-info, .service-card, .event-card, .testimonial-card {
+            padding: 1rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .book-info h3, .category-info h3, .service-card h4, .event-card h3, .testimonial-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-info p, .category-info p, .service-card p, .event-card p, .testimonial-content {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-description {
+            font-size: 0.85rem;
+            margin-top: auto;
+        }
+
+        .service-category {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-category h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .testimonial-card {
+            background-color: var(--card-bg);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-top: auto;
+        }
+
+
+        .services {
+            background-color: rgba(30, 41, 59, 0.5);
+            padding: 4rem 0;
+        }
+
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        .service-card.animate {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .service-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.1);
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .service-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .service-card p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+        }
+
+        .testimonials {
+            padding: 4rem 0;
+        }
+
+
+        .newsletter {
+            background-color: rgba(30, 41, 59, 0.5);
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .newsletter h2 {
+            margin-bottom: 2rem;
+        }
+
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .newsletter-form input {
+            flex-grow: 1;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .newsletter-form input:focus {
+            box-shadow: 0 0 0 2px var(--primary-color);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .newsletter-form button {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: var(--bg-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .newsletter-form button:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .faq {
+            padding: 4rem 0;
+        }
+
+        .faq-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-question:hover {
+            background-color: rgba(34, 211, 238, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .faq-answer {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 1rem;
+            max-height: 1000px;
+        }
+
+        .new-arrivals {
+            padding: 2rem 0;
+            overflow: hidden;
+        }
+
+        .carousel {
+            display: flex;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-item {
+            flex: 0 0 200px;
+            margin-right: 1rem;
+            opacity: 0;
+        }
+
+        .carousel-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .author-spotlight {
+            background-color: rgba(30, 41, 59, 0.5);
+            padding: 4rem 0;
+        }
+
+        .author-card {
+            display: flex;
+            align-items: center;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .author-image {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-right: 2rem;
+        }
+
+        .reading-challenges {
+            padding: 4rem 0;
+        }
+
+        .challenge-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .challenge-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(34, 211, 238, 0.3);
+        }
+
+        .challenge-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .library-events {
+            background-color: rgba(30, 41, 59, 0.5);
+            padding: 4rem 0;
+        }
+
+        .library-events .container {
+            max-width: 1400px;
+            width: 95%;
+        }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .event-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(34, 211, 238, 0.2);
+        }
+
+        .event-date {
+            font-weight: bold;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .event-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-card p {
+            flex-grow: 1;
+            margin-bottom: 1rem;
+        }
+
+        .event-card .btn {
+            align-self: flex-start;
+        }
+
+
+        .book-of-the-month {
+            padding: 4rem 0;
+            text-align: center;
+        }
+
+        .book-of-the-month-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2rem;
+            display: inline-flex;
+            align-items: center;
+            text-align: left;
+        }
+
+        .book-of-the-month-cover {
+            width: 200px;
+            height: 300px;
+            object-fit: cover;
+            margin-right: 2rem;
+        }
+
+        .reading-progress {
+            padding: 4rem 0;
+        }
+
+        .progress-bar {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+        }
+
+        .progress {
+            background-color: var(--primary-color);
+            height: 100%;
+            width: 0;
+            transition: width 1s ease;
+        }
+
+        .genre-exploration {
+            padding: 4rem 0;
+        }
+
+        .genre-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .genre-item {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .genre-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(34, 211, 238, 0.2);
+        }
+
+        .genre-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .genre-item:hover .genre-icon {
+            transform: rotate(360deg);
+            transition: transform 0.5s ease;
+        }
+
+        .genre-description {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .virtual-bookshelf {
+            padding: 4rem 0;
+        }
+
+        .bookshelf {
+            display: flex;
+            overflow-x: auto;
+            padding: 2rem 0;
+        }
+
+        .bookshelf-item {
+            flex: 0 0 auto;
+            width: 100px;
+            margin-right: 1rem;
+            text-align: center;
+            opacity: 0;
+        }
+
+        .bookshelf-item img {
+            height: 150px;
+            width: auto;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .bookshelf-item img:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        footer {
+            background-color: rgba(30, 41, 59, 0.8);
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .footer-column h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+        }
+
+        .footer-column ul {
+            list-style-type: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary-color);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-icons a {
+            color: var(--text-color);
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            color: var(--primary-color);
+            transform: translateY(-5px);
+        }
+
+        p, h1, h2, h3, h4, h5, h6 {
+            padding: 0.5rem 0;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: rgba(34, 211, 238, 0.3);
+            border-radius: 20px;
+            border: 2px solid var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: rgba(34, 211, 238, 0.5);
+        }
+
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(34, 211, 238, 0.3) transparent;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .library-theme-element {
+            position: absolute;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .book-icon {
+            font-size: 3rem;
+            top: 10%;
+            left: 5%;
+        }
+
+        .glasses-icon {
+            font-size: 2.5rem;
+            bottom: 15%;
+            right: 8%;
+        }
+
+        .quill-icon {
+            font-size: 2.8rem;
+            top: 20%;
+            right: 5%;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-toggle {
+                display: block;
+                font-size: 1.5rem;
+                background: none;
+                border: none;
+                color: var(--text-color);
+                cursor: pointer;
+            }
+            .nav-links.active {
+                display: flex;
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background-color: var(--bg-color);
+                padding: 1rem;
+                text-align: center;
+            }
+            .nav-links.active a {
+                padding: 0.5rem 0;
+            }
+            .container {
+                width: 95%;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .stats {
+                flex-direction: column;
+                gap: 2rem;
+            }
+            .books-grid, .categories-grid, .services-grid, .events-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .book-card, .category-card, .service-card, .event-card, .testimonial-card {
+                max-width: 100%;
+            }
+            .newsletter-form {
+                flex-direction: column;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Add these new styles for animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .book-card, .category-card, .carousel-item, .bookshelf-item {
+            opacity: 0;
+        }
+
+        .book-card:hover,
+        .category-card:hover,
+        .service-card:hover,
+        .event-card:hover,
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(34, 211, 238, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .book-card:hover img,
+        .category-card:hover img {
+            transform: scale(1.1);
+            transition: transform 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in-up {
+            animation: fadeInUp 0.5s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">LibraryX</div>
+            <button class="mobile-menu-toggle">☰</button>
+            <div class="nav-links">
+                <a href="#books">Books</a>
+                <a href="#categories">Categories</a>
+                <a href="#services">Services</a>
+                <a href="#events">Events</a>
+                <a href="#virtual-bookshelf">My Bookshelf</a>
+                <a href="#faq">FAQ</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="imgs/hero.jpg" alt="Library background" class="hero-image">
+            <div class="container hero-content">
+                <h1>Discover Worlds & Explore Stories</h1>
+                <p>Welcome to LibraryX, your gateway to a universe of knowledge and imagination.</p>
+                <a href="#books" class="btn">Start Reading</a>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="stat-item">
+                <h3>1M+</h3>
+                <p>Books Available</p>
+            </div>
+            <div class="stat-item">
+                <h3>500K</h3>
+                <p>Active Readers</p>
+            </div>
+            <div class="stat-item">
+                <h3>50+</h3>
+                <p>Categories</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Access</p>
+            </div>
+            <div class="stat-item">
+                <h3>100+</h3>
+                <p>Partner Libraries</p>
+            </div>
+            <div class="stat-item">
+                <h3>5M+</h3>
+                <p>Monthly Views</p>
+            </div>
+        </section>
+
+        <section id="book-of-the-month" class="book-of-the-month container">
+            <h2>Book of the Month</h2>
+            <div class="book-of-the-month-card">
+                <img src="imgs/silent_echo.jpg" alt="Book of the Month Cover" class="book-of-the-month-cover">
+                <div>
+                    <h3>The Silent Echo</h3>
+                    <p>By Sarah J. Maas</p>
+                    <p>A gripping tale of mystery and self-discovery that will keep you on the edge of your seat.</p>
+                    <a href="#" class="btn">Read Now</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="new-arrivals" class="new-arrivals container">
+            <h2>New Arrivals</h2>
+            <div class="carousel">
+                
+            </div>
+        </section>
+
+        <section id="books" class="container">
+            <h2>Featured Books</h2>
+            <div class="books-grid">
+                
+            </div>
+        </section>
+
+        <section id="categories" class="container">
+            <h2>Popular Categories</h2>
+            <div class="categories-grid">
+                
+            </div>
+        </section>
+
+        <section id="genre-exploration" class="genre-exploration container">
+            <h2>Explore New Genres</h2>
+            <div class="genre-grid">
+                <div class="genre-item" data-genre="Mystery">
+                    <div class="genre-icon">🕵️</div>
+                    <h3>Mystery</h3>
+                </div>
+                <div class="genre-item" data-genre="Sci-Fi">
+                    <div class="genre-icon">🚀</div>
+                    <h3>Sci-Fi</h3>
+                </div>
+                <div class="genre-item" data-genre="Fantasy">
+                    <div class="genre-icon">🧙</div>
+                    <h3>Fantasy</h3>
+                </div>
+                <div class="genre-item" data-genre="Romance">
+                    <div class="genre-icon">💕</div>
+                    <h3>Romance</h3>
+                </div>
+                <div class="genre-item" data-genre="Historical">
+                    <div class="genre-icon">🏛️</div>
+                    <h3>Historical</h3>
+                </div>
+                <div class="genre-item" data-genre="Psychology">
+                    <div class="genre-icon">🧠</div>
+                    <h3>Psychology</h3>
+                </div>
+                <div class="genre-item" data-genre="Horror">
+                    <div class="genre-icon">👻</div>
+                    <h3>Horror</h3>
+                </div>
+                <div class="genre-item" data-genre="Thriller">
+                    <div class="genre-icon">😱</div>
+                    <h3>Thriller</h3>
+                </div>
+                <div class="genre-item" data-genre="Poetry">
+                    <div class="genre-icon">🎭</div>
+                    <h3>Poetry</h3>
+                </div>
+            </div>
+            <div id="genre-description" class="genre-description">
+                <p>Click on a genre to learn more about it!</p>
+            </div>
+        </section>
+
+        <section id="author-spotlight" class="author-spotlight">
+            <div class="container">
+                <h2>Author Spotlight</h2>
+                <div class="author-card">
+                    <img src="imgs/Jane_doe.jpg" alt="Author of the Month" class="author-image">
+                    <div class="author-info">
+                        <h3>Jane Doe</h3>
+                        <p>Bestselling author of "The Midnight Chronicles" series</p>
+                        <a href="#" class="btn">Explore Author's Works</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <div class="container">
+                <h2>Our Services</h2>
+                <div class="services-grid">
+                    <div class="service-category">
+                        <h3>Reading Experience</h3>
+                        <div class="service-card">
+                            <i class="service-icon">📚</i>
+                            <h4>Digital Library</h4>
+                            <p>Access millions of ebooks anytime, anywhere.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">🎧</i>
+                            <h4>Audiobooks</h4>
+                            <p>Listen to your favorite books on the go.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">📱</i>
+                            <h4>Mobile App</h4>
+                            <p>Enjoy seamless reading acrossall your devices.</p>
+                        </div>
+                    </div>
+                    <div class="service-category">
+                        <h3>Personalization</h3>
+                        <div class="service-card">
+                            <i class="service-icon">📝</i>
+                            <h4>Reading Lists</h4>
+                            <p>Create and share personalized reading lists.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">🔍</i>
+                            <h4>Personalized Recommendations</h4>
+                            <p>Get book suggestions tailored to your tastes.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">🏷️</i>
+                            <h4>Custom Tags</h4>
+                            <p>Organize your library with personalized tags.</p>
+                        </div>
+                    </div>
+                    <div class="service-category">
+                        <h3>Community</h3>
+                        <div class="service-card">
+                            <i class="service-icon">👥</i>
+                            <h4>Book Clubs</h4>
+                            <p>Join virtual book clubs and discussions.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">💬</i>
+                            <h4>Author Q&As</h4>
+                            <p>Participate in live Q&A sessions with authors.</p>
+                        </div>
+                        <div class="service-card">
+                            <i class="service-icon">📝</i>
+                            <h4>Reader Reviews</h4>
+                            <p>Share your thoughts and read others' reviews.</p>
+                        </div>
+                    </div>
+                    <div class="service-category">
+                        <h3>Learning & Growth</h3>
+                        <div class="service-card">
+                            <i class="service-icon">🏆</i>
+                            <h4>Reading Challenges</h4>
+                            <p>Participate in exciting reading challenges.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="reading-progress" class="reading-progress container">
+            <h2>Your Reading Progress</h2>
+            <p>You've read 15 out of 50 books in your yearly challenge!</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: 30%;"></div>
+            </div>
+        </section>        <section id="reading-challenges" class="reading-challenges container">
+            <h2>Reading Challenges</h2>
+            <div class="challenge-card">
+                <h3>Summer Reading Sprint</h3>
+                <p>Read 10 books in 10 weeks and win exciting prizes!</p>
+                <a href="#" class="btn">Join Challenge</a>
+            </div>
+            <div class="challenge-card">
+                <h3>Genre Explorer</h3>
+                <p>Dive into 5 different genres and broaden your literary horizons.</p>
+                <a href="#" class="btn">Start Exploring</a>
+            </div>
+            <div class="challenge-card">
+                <h3>Classics Marathon</h3>
+                <p>Read 12 classic novels in 12 months.</p>
+                <a href="#" class="btn">Begin Journey</a>
+            </div>
+        </section>
+
+        <section id="events" class="library-events">
+            <div class="container">
+                <h2>Upcoming Library Events</h2>
+                <div class="events-grid">
+                    <div class="event-card">
+                        <p class="event-date">July 15, 2023</p>
+                        <h3>Author Meet & Greet: John Smith</h3>
+                        <p>Join us for an evening with bestselling author John Smith as he discusses his latest novel.</p>
+                        <a href="#" class="btn">Register</a>
+                    </div>
+                    <div class="event-card">
+                        <p class="event-date">August 1, 2023</p>
+                        <h3>Children's Storytime</h3>
+                        <p>Bring your little ones for an enchanting storytelling session with our librarians.</p>
+                        <a href="#" class="btn">Learn More</a>
+                    </div>
+                    <div class="event-card">
+                        <p class="event-date">August 15, 2023</p>
+                        <h3>Book Club Meeting: "The Midnight Library"</h3>
+                        <p>Discuss Matt Haig's bestseller with fellow book lovers.</p>
+                        <a href="#" class="btn">Join Discussion</a>
+                    </div>
+                    <div class="event-card">
+                        <p class="event-date">September 5, 2023</p>
+                        <h3>Poetry Reading Night</h3>
+                        <p>Experience the power of words as local poets share their original works.</p>
+                        <a href="#" class="btn">Reserve a Spot</a>
+                    </div>
+                    <div class="event-card">
+                        <p class="event-date">September 20, 2023</p>
+                        <h3>Science Fiction Writing Workshop</h3>
+                        <p>Learn the art of crafting compelling sci-fi stories with award-winning author Sarah Johnson.</p>
+                        <a href="#" class="btn">Sign Up</a>
+                    </div>
+                    <div class="event-card">
+                        <p class="event-date">October 10, 2023</p>
+                        <h3>Halloween Book Fair</h3>
+                        <p>Explore a spooky selection of books and participate in themed activities for all ages.</p>
+                        <a href="#" class="btn">Get Tickets</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="virtual-bookshelf" class="virtual-bookshelf container">
+            <h2>Your Virtual Bookshelf</h2>
+            <div class="bookshelf">
+                
+            </div>
+        </section>
+
+        <section id="testimonials" class="testimonials container">
+            <h2>What Our Readers Say</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"LibraryX has transformed my reading experience. I can access any book I want, anytime!"</p>
+                    <p class="testimonial-author">- Sarah J., Avid Reader</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The audiobook selection is fantastic. I've been able to 'read' so much more during my commutes."</p>
+                    <p class="testimonial-author">- Michael T., Busy Professional</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"I love the reading challenges. They've helped me discover new genres and authors I never would have tried otherwise."</p>
+                    <p class="testimonial-author">- Emily R., Book Enthusiast</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The personalized recommendations are spot-on! It's like having a personal librarian who knows my tastes perfectly."</p>
+                    <p class="testimonial-author">- David L., Eclectic Reader</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"LibraryX's virtual book clubs have connected me with readers from around the world. It's been an amazing cultural exchange!"</p>
+                    <p class="testimonial-author">- Sophia K., Global Citizen</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The e-reader interface is so intuitive. It's made my digital reading experience smooth and enjoyable."</p>
+                    <p class="testimonial-author">- Alex M., Tech Enthusiast</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"As a teacher, I appreciate the educational resources. They've been invaluable for my literature classes."</p>
+                    <p class="testimonial-author">- Lisa R., Educator</p>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-content">"The variety of languages available has helped me improve my multilingual skills. It's like a language learning tool and library in one!"</p>
+                    <p class="testimonial-author">- Carlos G., Language Learner</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="newsletter">
+            <div class="container">
+                <h2>Stay Updated</h2>
+                <p>Subscribe to our newsletter for the latest book releases and library updates.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Enter your email" required>
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="faq" class="faq container">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How do I borrow a digital book?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>To borrow a digital book, simply log in to your account, search for the book you want, and click the "Borrow" button. The book will be added to your digital library for the specified loan period.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>Can I read books offline?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>Yes, you can download books for offline reading using our mobile app. This allows you to enjoy your borrowed books even without an internet connection.</p>
+                </div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question">
+                    <h3>How long can I keep a borrowed book?</h3>
+                    <span class="faq-toggle">+</span>
+                </div>
+                <div class="faq-answer">
+                    <p>The standard loan period is 14 days, but this may vary depending on the book and your membership level. You can check the exact loan period for each book in your digital library.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-column">
+                <h3>About LibraryX</h3>
+                <ul>
+                    <li><a href="#">Our Story</a></li>
+                    <li><a href="#">Team</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Reading Tips</a></li>
+                    <li><a href="#">LibraryX Blog</a></li>
+                    <li><a href="#">Accessibility</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Legal</h3>
+                <ul>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Copyright Notice</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#" aria-label="Facebook">📘</a>
+                    <a href="#" aria-label="Twitter">🐦</a>
+                    <a href="#" aria-label="Instagram">📷</a>
+                    <a href="#" aria-label="LinkedIn">💼</a>
+                </div>
+                <p>© 2023 LibraryX. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="library-theme-element book-icon">📚</div>
+    <div class="library-theme-element glasses-icon">👓</div>
+    <div class="library-theme-element quill-icon">🖋️</div>
+
+    <script>
+        const books = [
+            { title: "The Great Gatsby", author: "F. Scott Fitzgerald", cover: "imgs/the greate gatsby.jpg", description: "A tragic love story set in the roaring 1920s, exploring themes of decadence, idealism, social upheaval, and excess." },
+            { title: "To Kill a Mockingbird", author: "Harper Lee", cover: "imgs/to kill a mockingbird.jpg", description: "A powerful exploration of racial injustice and moral growth in the American South, told through the eyes of a young girl." },
+            { title: "1984", author: "George Orwell", cover: "imgs/1984.jpg", description: "A dystopian novel set in a totalitarian society, warning of the dangers of government overreach, totalitarianism, and repressive regimentation." },
+            { title: "Pride and Prejudice", author: "Jane Austen", cover: "imgs/pride and prejudic.jpg", description: "A classic romance novel that satirizes 19th-century British society and its attitudes toward marriage, manners, and relationships." },
+            { title: "The Catcher in the Rye", author: "J.D. Salinger", cover: "imgs/the catcher on the rye.png", description: "A controversial novel that explores themes of alienation, innocence, and the challenges of adolescence in post-World War II America." },
+            { title: "Moby-Dick", author: "Herman Melville", cover: "imgs/moby-dick.jpeg", description: "An epic tale of obsession, revenge, and the human struggle against nature, centered around the pursuit of a giant white whale." },
+            { title: "The Lord of the Rings", author: "J.R.R. Tolkien", cover: "imgs/the lord of the rings.jpg", description: "A high-fantasy epic that follows the quest to destroy a powerful ring and save Middle-earth from the Dark Lord Sauron." },
+            { title: "The Hunger Games", author: "Suzanne Collins", cover: "imgs/the hunger games.jpg", description: "A dystopian novel set in a world where young people are forced to compete in a televised battle to the death." },
+            { title: "The Da Vinci Code", author: "Dan Brown", cover: "imgs/the da vinci code.jpg", description: "A thrilling mystery novel that blends art, history, and religion, following a symbologist's quest to uncover a centuries-old secret." },
+            { title: "The Alchemist", author: "Paulo Coelho", cover: "imgs/the alchemist.jpg", description: "A philosophical novel about a young shepherd's journey to find his personal legend and fulfill his dreams." },
+            { title: "The Girl with the Dragon Tattoo", author: "Stieg Larsson", cover: "imgs/The Girl with the Dragon Tattoo.webp", description: "A gripping crime novel that combines murder mystery, family saga, and financial intrigue into a complex and engrossing narrative." },
+            { title: "The Kite Runner", author: "Khaled Hosseini", cover: "imgs/the kite runner.jpg", description: "A moving tale of friendship, betrayal, and redemption set against the backdrop of Afghanistan's tumultuous history." },
+        ];
+
+        const categories = [
+            { name: "Fiction", icon: "📖" },
+            { name: "Non-Fiction", icon: "🧠" },
+            { name: "Science Fiction", icon: "🚀" },
+            { name: "Mystery", icon: "🕵️" },
+            { name: "Romance", icon: "❤️" },
+            { name: "Biography", icon: "👤" },
+            { name: "History", icon: "🏛️" },
+            { name: "Self-Help", icon: "🌱" },
+            { name: "Fantasy", icon: "🧙" },
+            { name: "Horror", icon: "👻" },
+            { name: "Thriller", icon: "😱" },
+            { name: "Poetry", icon: "🎭" },
+        ];
+
+        const newArrivals = [
+            { title: "The Midnight Library", author: "Matt Haig", cover: "imgs/midnight_l.jpg" },
+            { title: "Project Hail Mary", author: "Andy Weir", cover: "imgs/project hail mary.jpg" },
+            { title: "The Four Winds", author: "Kristin Hannah", cover: "imgs/the four winds.jpeg" },
+            { title: "The Invisible Life of Addie LaRue", author: "V.E. Schwab", cover: "imgs/The Invisible Life of Addie LaRue.jpeg" },
+            { title: "Klara and the Sun", author: "Kazuo Ishiguro", cover: "imgs/klara and the sun.jpg" },
+            { title: "The Paris Library", author: "Janet Skeslien Charles", cover: "imgs/the paris library.jpg" },
+            { title: "The Last Thing He Told Me", author: "Laura Dave", cover: "imgs/The Last Thing He Told Me.jpg" },
+            { title: "The Rose Code", author: "Kate Quinn", cover: "imgs/The Rose Code.jpeg" },
+        ];
+
+        const bookshelf = [
+            { title: "Dune", cover: "imgs/dune.webp" },
+            { title: "The Hobbit", cover: "imgs/The Hobbit.jpg" },
+            { title: "Harry Potter", cover: "imgs/Harry Potter.jpg" },
+            { title: "The Alchemist", cover: "imgs/the alchemist.jpg" },
+            { title: "The Martian", cover: "imgs/The Martian.jpg" },
+            { title: "The Hitchhiker's Guide to the Galaxy", cover: "imgs/The Hitchhiker's Guide to the Galaxy.jpg" },
+            { title: "The Name of the Wind", cover: "imgs/The Name of the Wind.jpg" },
+            { title: "Neuromancer", cover: "imgs/Neuromancer.jpg" },
+            { title: "The Catcher in the Rye", cover: "imgs/the catcher on the rye.png" },
+            { title: "1984", cover: "imgs/1984.jpg" },
+            { title: "Pride and Prejudice", cover: "imgs/pride and prejudic.jpg" },
+        ];
+
+        const createBookCards = () => {
+            const booksGrid = document.querySelector('.books-grid');
+            books.forEach((book, index) => {
+                const bookCard = document.createElement('div');
+                bookCard.className = 'book-card';
+                bookCard.innerHTML = `
+                    <img src="${book.cover}" alt="${book.title} cover">
+                    <div class="book-info">
+                        <h3>${book.title}</h3>
+                        <p>${book.author}</p>
+                        <p class="book-description">${book.description}</p>
+                    </div>
+                `;
+                booksGrid.appendChild(bookCard);
+                setTimeout(() => bookCard.classList.add('fade-in-up'), 100 * index);
+            });
+        };
+
+        const createCategoryCards = () => {
+            const categoriesGrid = document.querySelector('.categories-grid');
+            categories.forEach((category, index) => {
+                const categoryCard = document.createElement('div');
+                categoryCard.className = 'category-card';
+                categoryCard.innerHTML = `
+                    <div class="category-info">
+                        <h3>${category.icon} ${category.name}</h3>
+                    </div>
+                `;
+                categoriesGrid.appendChild(categoryCard);
+                setTimeout(() => categoryCard.classList.add('fade-in-up'), 100 * index);
+            });
+        };
+
+        const createNewArrivalsCarousel = () => {
+            const carousel = document.querySelector('.carousel');
+            const totalItems = newArrivals.length;
+
+            
+            for (let i = 0; i < totalItems * 2; i++) {
+                const book = newArrivals[i % totalItems];
+                const carouselItem = document.createElement('div');
+                carouselItem.className = 'carousel-item';
+                carouselItem.innerHTML = `
+                    <img src="${book.cover}" alt="${book.title} cover">
+                    <div class="book-info">
+                        <h3>${book.title}</h3>
+                        <p>${book.author}</p>
+                    </div>
+                `;
+                carousel.appendChild(carouselItem);
+                setTimeout(() => carouselItem.classList.add('fade-in-up'), 100 * i);
+            }
+        };
+
+        const createVirtualBookshelf = () => {
+            const bookshelfContainer = document.querySelector('.bookshelf');
+            bookshelf.forEach((book, index) => {
+                const bookshelfItem = document.createElement('div');
+                bookshelfItem.className = 'bookshelf-item';
+                bookshelfItem.innerHTML = `
+                    <img src="${book.cover}" alt="${book.title} cover">
+                    <p>${book.title}</p>
+                `;
+                bookshelfContainer.appendChild(bookshelfItem);
+                setTimeout(() => bookshelfItem.classList.add('fade-in-up'), 100 * index);
+            });
+        };
+
+        const animateStats = () => {
+            const stats = document.querySelectorAll('.stat-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            stats.forEach(stat => observer.observe(stat));
+        };
+
+        const setupFAQ = () => {
+            const faqItems = document.querySelectorAll('.faq-item');
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    item.classList.toggle('active');
+                    const toggle = question.querySelector('.faq-toggle');
+                    toggle.textContent = item.classList.contains('active') ? '-' : '+';
+                });
+            });
+        };
+
+        const handleHeaderScroll = () => {
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        };
+
+        const handleCarousel = () => {
+            const carousel = document.querySelector('.carousel');
+            const items = carousel.querySelectorAll('.carousel-item');
+            const itemWidth = items[0].offsetWidth + 16; 
+            const totalItems = items.length / 2; 
+            let currentIndex = 0;
+
+            setInterval(() => {
+                currentIndex++;
+                carousel.style.transition = 'transform 0.5s ease';
+                carousel.style.transform = `translateX(-${currentIndex * itemWidth}px)`;
+
+                
+                if (currentIndex >= totalItems) {
+                    setTimeout(() => {
+                        carousel.style.transition = 'none';
+                        currentIndex = 0;
+                        carousel.style.transform = `translateX(0)`;
+                    }, 500); 
+                }
+            }, 3000);
+        };
+
+        const animateReadingProgress = () => {
+            const progressBar = document.querySelector('.progress');
+            progressBar.style.width = '30%';
+        };
+
+        const setupGenreExploration = () => {
+            const genreItems = document.querySelectorAll('.genre-item');
+            const genreDescription = document.getElementById('genre-description');
+
+            const genreInfo = {
+                Mystery: "Dive into intriguing puzzles and suspenseful plots that keep you guessing until the very end.",
+                "Sci-Fi": "Explore futuristic worlds, advanced technology, and the endless possibilities of the universe.",
+                Fantasy: "Immerse yourself in magical realms, mythical creatures, and epic adventures beyond imagination.",
+                Romance: "Experience the flutter of hearts and the complexities of love in various settings and time periods.",
+                Historical: "Travel through time and witness significant events and periods that shaped our world.",
+                Psychology: "Delve into the human mind and explore the intricacies of behavior and mental processes.",
+                Horror: "Face your fears and experience the thrill of the unknown in spine-chilling narratives.",
+                Thriller: "Feel your pulse quicken with fast-paced, tension-filled stories that keep you on the edge of your seat.",
+                Poetry: "Immerse yourself in the beauty of language, rhythm, and emotion through verses and stanzas."
+            };
+
+            genreItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const genre = item.getAttribute('data-genre');
+                    genreDescription.innerHTML = `<h3>${genre}</h3><p>${genreInfo[genre]}</p>`;
+                    genreDescription.style.display = 'block';
+                    genreDescription.classList.add('fade-in');
+                });
+            });
+        };
+
+        const setupSmoothScrolling = () => {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        };
+
+        const animateServices = () => {
+            const serviceCategories = document.querySelectorAll('.service-category');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                        animateServiceCards(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            serviceCategories.forEach(category => observer.observe(category));
+        };
+
+        const animateServiceCards = (category) => {
+            const cards = category.querySelectorAll('.service-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in-up');
+                }, index * 100);
+            });
+        };
+
+        const animateTestimonials = () => {
+            const testimonials = document.querySelectorAll('.testimonial-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            testimonials.forEach(testimonial => observer.observe(testimonial));
+        };
+
+        const animateEvents = () => {
+            const eventCards = document.querySelectorAll('.event-card');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('fade-in-up');
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            eventCards.forEach(card => observer.observe(card));
+        };
+
+        const handleMobileMenu = () => {
+            const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+
+            mobileMenuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            createBookCards();
+            createCategoryCards();
+            createNewArrivalsCarousel();
+            createVirtualBookshelf();
+            animateStats();
+            setupFAQ();
+            handleHeaderScroll();
+            handleCarousel();
+            animateReadingProgress();
+            setupSmoothScrolling();
+            setupGenreExploration();
+            animateServices();
+            animateTestimonials();
+            animateEvents();
+            handleMobileMenu();
+        });
+    </script>
+</body>
+</html>
+
